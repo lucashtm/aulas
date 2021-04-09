@@ -13,3 +13,6 @@ if operation == "*":
 
 if operation == "/":
     print(first_number / second_number)
+
+if operation == "**":
+    print(first_number ** second_number)
