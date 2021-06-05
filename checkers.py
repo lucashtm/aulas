@@ -1,5 +1,7 @@
 import os
 
+clear_command = 'cls' if os.name == 'nt' else 'clear'  
+
 player1 = 'O'
 player2 = 'X'
 queen = '@'
@@ -60,7 +62,7 @@ is_player1 = True
 try_again = False
 play_again = False
 while True:
-    os.system('cls')
+    os.system(clear_command)
     print_board(board, message)
     message = ''
     piece = input(f"{'Player 1' if is_player1 else 'Player 2'}> ")
