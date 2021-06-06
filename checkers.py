@@ -2,9 +2,10 @@ import os
 
 clear_command = 'cls' if os.name == 'nt' else 'clear'  
 
-player1 = 'O'
-player2 = 'X'
-queen = '@'
+player1 = 'o'
+player2 = 'x'
+queen1 = 'O'
+queen2 = 'X'
 
 empty = ' '
 
@@ -47,6 +48,9 @@ def print_board(board, message):
     print(f'\n{col_indexes}')
     print(f'\n{message}\n\n')
 
+def get_board(col, row):
+    return board[row][col]
+
 def get_board_coords(coord):
     coords = list(coord)
     row = ord(coords[0]) - ord('a')
@@ -56,6 +60,12 @@ def get_board_coords(coord):
 def get_board_value(board, coord):
     row, col = get_board_coords(coord)
     return board[row][col]
+
+def is_queen(piece):
+    return piece == queen1 or piece == queen2
+
+def is_inside_board(col, row):
+    return col < len(board[0]) and col >= 0 and row < len(board) and row >= 0
 
 message = ''
 is_player1 = True
@@ -70,7 +80,7 @@ while True:
     if piece_value == empty:
         message = 'Não há peças nessa casa'
         continue
-    if (is_player1 and piece_value != player1) or (not is_player1 and piece_value != player2):
+    if (is_player1 and piece_value != player1 and piece_value != queen1) or (not is_player1 and piece_value != player2 and piece_value != queen2):
         message = 'Escolha uma peça sua'
         continue
     target_player = player2 if is_player1 else player1
@@ -86,7 +96,7 @@ while True:
         message = 'Você só pode se mover em diagonais'
         continue
 
-    if distance > 4:
+    if distance > 4 and not is_queen(piece_value):
         message = 'Não pode ir tão longe'
         continue
 
@@ -129,17 +139,34 @@ while True:
         ]
 
         for diagonal in diagonals:
-            place_to_check = [place_col + diagonal[0], place_row + diagonal[1]]
-            if board[place_to_check[1]][place_to_check[0]] != target_player:
-                continue
-            if place_to_check[0] > len(board[0])-1 or place_to_check[0] < 0 or place_to_check[1] > len(board)-1 or place_to_check[1] < 0:
-                continue
-            place_to_check[0] += diagonal[0]
-            place_to_check[1] += diagonal[1]
-            if board[place_to_check[1]][place_to_check[0]] == empty:
-                play_again = True
+            place_to_check = [place_col, place_row]
+            pieces_in_line = []
+            found_enemy = False
+            while is_inside_board(place_to_check[0] + diagonal[0], place_to_check[1] + diagonal[1]):
+                place_to_check[0] += diagonal[0]
+                place_to_check[1] += diagonal[1]
+                pieces_in_line.append((place_to_check[0], place_to_check[1]))
+
+                if len(pieces_in_line) > 1:
+                    if get_board(*pieces_in_line[0]) == target_player and get_board(*pieces_in_line[1]) == empty:
+                        message += str(pieces_in_line[0]) + ' ' + str(pieces_in_line[1])
+                        play_again = True
+                        break
+                    if get_board(*pieces_in_line[0]) == target_player and get_board(*pieces_in_line[1]) == target_player:
+                        play_again = False
+                        break
+                    if is_queen(piece_value):
+                        if found_enemy and get_board(*place_to_check) == empty:
+                            message += 'COND 2 '
+                            play_again = True
+                            break
+                        if get_board(*place_to_check) == target_player:
+                            found_enemy = True
+            if play_again:
+                break
+
     else:
-        if (is_player1 and place_row < piece_row) or (not is_player1 and place_row > piece_row):
+        if not is_queen(piece_value) and ((is_player1 and place_row < piece_row) or (not is_player1 and place_row > piece_row)):
             message = 'Peças comuns só andam pra frente'
             continue
 
@@ -148,7 +175,15 @@ while True:
         continue
 
     board[piece_row][piece_col] = empty
-    board[place_row][place_col] = player1 if is_player1 else player2
+
+    piece_char = piece_value
+
+    if player1 and place_row == 7:
+        piece_char = queen1
+    if player2 and place_row == 0:
+        piece_char = queen2
+
+    board[place_row][place_col] = piece_char
 
     if not play_again:
         is_player1 = not is_player1
