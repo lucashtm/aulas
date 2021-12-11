@@ -1,0 +1,12 @@
+compre farinha
+compre sal
+compre ovo
+compre leite
+compre fermento
+compre manteiga
+volte ao a linha 3
+
+bata o leite com farinha e manteiga
+acrescente o ovo
+acrescente acucar
+acrescente sal
