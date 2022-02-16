@@ -4,13 +4,12 @@ students = [
   ['Yuri', 28, 'O+']
 ]
 
-student = students[2]
+for student in students:
+  name = student[0]
+  age = student[1]
+  blood_type = ''
 
-name = student[0]
-age = student[1]
-blood_type = ''
+  if len(student) > 2:
+    blood_type = student[2]
 
-if len(student) > 2:
-  blood_type = student[2]
-
-print(name, age, blood_type)
+  print(name, age, blood_type)
