@@ -11,7 +11,7 @@ if len(sys.argv) > 2:
 
 words = [
     text2art("Parabens", font=font).split('\n'),
-    text2art("Jorginho", font=font).split('\n'),
+    text2art("Yuri", font=font).split('\n'),
     text2art("Feliz", font=font).split('\n'),
     text2art("Aniversario", font=font).split('\n'),
     text2art(":)", font=font).split('\n'),
@@ -32,7 +32,7 @@ init = 0
 length = max(map(len, lines))
 
 while True:
-    os.system('cls')
+    os.system('clear')
     for line in lines:
         for i in range(init, columns+init):
             if i%length < len(line):
